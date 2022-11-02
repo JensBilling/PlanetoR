@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PlanetoR.Data;
 using PlanetoR.Models;
 
 namespace PlanetoR.Controllers;
@@ -7,7 +9,8 @@ namespace PlanetoR.Controllers;
 [ApiController]
 public class CelestialBodiesController : ControllerBase
 {
-    
+    private readonly AppDbContext _context;
+
     private static List<CelestialBody> celestialBodies = new List<CelestialBody>()
     {
         new CelestialBody
@@ -27,17 +30,22 @@ public class CelestialBodiesController : ControllerBase
             AverageTempCelsius = 30
         }
     };
+
+    public CelestialBodiesController(AppDbContext context)
+    {
+        _context = context;
+    }
     
     [HttpGet]
     public async Task<ActionResult<List<CelestialBody>>> GetAll()
     {
-        return Ok(celestialBodies);
+        return Ok(await _context.CelestialBodies.ToListAsync());
     }
     
     [HttpGet("{id}")]
     public async Task<ActionResult<CelestialBody>> GetById(int id)
     {
-        var celestialBody = celestialBodies.Find(cb => cb.Id == id);
+        var celestialBody = await _context.CelestialBodies.FindAsync(id);
         if (celestialBody == null)
         {
             return BadRequest("ID not found");
@@ -48,8 +56,10 @@ public class CelestialBodiesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<CelestialBody>>> AddCelestialBody(CelestialBody newCelestialBody)
     {
-        celestialBodies.Add(newCelestialBody);
-        return Ok(celestialBodies);
+        _context.CelestialBodies.Add(newCelestialBody);
+        await _context.SaveChangesAsync();
+
+        return Ok(await _context.CelestialBodies.ToListAsync());
     }
     
     [HttpPut]
