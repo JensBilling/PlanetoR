@@ -9,7 +9,6 @@ namespace PlanetoR.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-
     private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
 
@@ -28,21 +27,19 @@ public class AuthController : ControllerBase
         {
             return BadRequest("Username is already taken");
         }
+
         foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
         if (foundUser != null)
         {
             return BadRequest("Email is already taken");
         }
 
-        
-        
-        
         AuthHelper.CreatePasswordHash(requestUserDto.Password, out var passwordHash, out var passwordSalt);
         var user = new User();
         var apiKeyGuid = Guid.NewGuid().ToString();
         apiKeyGuid = apiKeyGuid.Replace("-", "");
         apiKeyGuid = apiKeyGuid.ToLower();
-        
+
         user.Username = requestUserDto.Username;
         user.PasswordHash = passwordHash;
         user.PasswordSalt = passwordSalt;
@@ -63,7 +60,8 @@ public class AuthController : ControllerBase
         if (foundUser == null)
         {
             foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
-            if (foundUser == null) {
+            if (foundUser == null)
+            {
                 return BadRequest("User not found!");
             }
         }
@@ -73,7 +71,15 @@ public class AuthController : ControllerBase
             return BadRequest("Wrong password!");
         }
 
-        string jwt = AuthHelper.CreateToken(foundUser);
+        string jwt = "";
+        if (foundUser.isAdmin)
+        {
+            jwt = AuthHelper.CreateAdminToken(foundUser);
+        }
+        else
+        {
+            jwt = AuthHelper.CreateUserToken(foundUser);
+        }
 
         return jwt;
     }
