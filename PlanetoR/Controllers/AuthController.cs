@@ -22,6 +22,21 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<User>> RegisterUser(UserDto requestUserDto)
     {
+        // Check if email and username is available
+        var foundUser = _context.users.FirstOrDefault(u => u.Username == requestUserDto.Username);
+        if (foundUser != null)
+        {
+            return BadRequest("Username is already taken");
+        }
+        foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+        if (foundUser != null)
+        {
+            return BadRequest("Email is already taken");
+        }
+
+        
+        
+        
         AuthHelper.CreatePasswordHash(requestUserDto.Password, out var passwordHash, out var passwordSalt);
         var user = new User();
         var apiKeyGuid = Guid.NewGuid().ToString();
@@ -47,7 +62,10 @@ public class AuthController : ControllerBase
 
         if (foundUser == null)
         {
-            return BadRequest("User not found!");
+            foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+            if (foundUser == null) {
+                return BadRequest("User not found!");
+            }
         }
 
         if (!AuthHelper.VerifyPasswordHash(requestUserDto.Password, foundUser.PasswordHash, foundUser.PasswordSalt))
