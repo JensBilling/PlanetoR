@@ -7,4 +7,5 @@ public class CelestialBody
     public string Long { get; set; }
     public string Lat { get; set; }
     public int AverageTempCelsius { get; set; }
+    public string GravitationalForce { get; set; }
 }

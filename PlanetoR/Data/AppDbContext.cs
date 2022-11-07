@@ -11,5 +11,6 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<CelestialBody> CelestialBodies { get; set; }
+    public DbSet<User> users { get; set; }
 
 }
