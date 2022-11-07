@@ -10,5 +10,6 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public string Email { get; set; } = string.Empty;
     public string ApiKey { get; set; } = string.Empty;
+    public int ApiKeyCount { get; set; } = 0;
     public bool isAdmin { get; set; } = false;
 }
