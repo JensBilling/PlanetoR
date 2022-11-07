@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlanetoR.Data;
 using PlanetoR.Models;
@@ -7,6 +8,7 @@ namespace PlanetoR.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "ROLE_USER, ROLE_ADMIN")]
 public class CelestialBodiesController : ControllerBase
 {
     private readonly AppDbContext _context;
@@ -33,7 +35,7 @@ public class CelestialBodiesController : ControllerBase
         return Ok(foundCelestialBody);
     }
 
-    [HttpPost]
+    [HttpPost, Authorize(Roles = "ROLE_ADMIN")]
     public async Task<ActionResult<List<CelestialBody>>> AddCelestialBody(CelestialBody newCelestialBody)
     {
         _context.CelestialBodies.Add(newCelestialBody);
@@ -42,7 +44,7 @@ public class CelestialBodiesController : ControllerBase
         return Ok(await _context.CelestialBodies.ToListAsync());
     }
     
-    [HttpPut]
+    [HttpPut, Authorize(Roles = "ROLE_ADMIN")]
     public async Task<ActionResult<List<CelestialBody>>> UpdateCelestialBody(CelestialBody updateCelestialBodyRequest)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(updateCelestialBodyRequest.Id);
@@ -61,7 +63,7 @@ public class CelestialBodiesController : ControllerBase
         return Ok(await _context.CelestialBodies.ToListAsync());
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize(Roles = "ROLE_ADMIN")]
     public async Task<ActionResult<List<CelestialBody>>> DeleteCelestialBody(int id)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(id);

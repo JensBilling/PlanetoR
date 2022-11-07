@@ -4,7 +4,7 @@ using PlanetoR.Utility;
 
 namespace PlanetoR.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {

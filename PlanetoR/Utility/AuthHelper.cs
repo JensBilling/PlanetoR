@@ -34,7 +34,7 @@ public static class AuthHelper
         List<Claim> claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, "ROLE_USER")
+            new Claim(ClaimTypes.Role, "ROLE_ADMIN")
         };
 
         var key = new SymmetricSecurityKey(
