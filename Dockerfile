@@ -9,6 +9,5 @@ RUN dotnet publish "./PlanetoR/PlanetoR.csproj" -c release -o /app --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal
 WORKDIR /app
 COPY --from=build /app .
-EXPOSE 5199
-EXPOSE 7253
+EXPOSE 80
 ENTRYPOINT ["dotnet", "PlanetoR.dll"]
