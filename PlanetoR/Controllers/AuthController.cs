@@ -83,4 +83,33 @@ public class AuthController : ControllerBase
 
         return jwt;
     }
+
+    [HttpPut("update-password")]
+    public async Task<ActionResult<String>> UpdatePassword(UserDto requestUserDto)
+    {
+        var foundUser = _context.users.FirstOrDefault(u => u.Username == requestUserDto.Username);
+
+        if (foundUser == null)
+        {
+            foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+            if (foundUser == null)
+            {
+                return BadRequest("User not found!");
+            }
+        }
+        
+        if (!AuthHelper.VerifyPasswordHash(requestUserDto.Password, foundUser.PasswordHash, foundUser.PasswordSalt))
+        {
+            return BadRequest("Wrong password!");
+        }
+        
+        AuthHelper.CreatePasswordHash(requestUserDto.NewPassword, out var passwordHash, out var passwordSalt);
+
+        foundUser.PasswordHash = passwordHash;
+        foundUser.PasswordSalt = passwordSalt;
+
+        await _context.SaveChangesAsync();
+        
+        return Ok("Password for " + requestUserDto.Username + " updated");
+    }
 }
