@@ -9,7 +9,7 @@ namespace PlanetoR.Utility;
 public static class AuthHelper
 {
     
-    static string jwtKey = ConfigurationManager.AppSetting["AppSettings:Token"];
+    static readonly string jwtKey = ConfigurationManager.AppSetting["AppSettings:Token"];
 
     public static void CreatePasswordHash(string Password, out byte[] passwordHash, out byte[] passwordSalt)
     {
@@ -31,10 +31,10 @@ public static class AuthHelper
     
     public static string CreateUserToken(User user)
     {
-        List<Claim> claims = new List<Claim>
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, "ROLE_USER")
+            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.Role, "ROLE_USER")
         };
 
         var key = new SymmetricSecurityKey(
@@ -53,10 +53,10 @@ public static class AuthHelper
     
     public static string CreateAdminToken(User user)
     {
-        List<Claim> claims = new List<Claim>
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim(ClaimTypes.Role, "ROLE_ADMIN")
+            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.Role, "ROLE_ADMIN")
         };
 
         var key = new SymmetricSecurityKey(

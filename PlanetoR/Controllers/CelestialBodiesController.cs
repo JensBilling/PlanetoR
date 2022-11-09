@@ -19,13 +19,13 @@ public class CelestialBodiesController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<CelestialBody>>> GetAll()
+    public async Task<ActionResult<List<CelestialBody>>> GetAllCelestialBodies()
     {
         return Ok(await _context.CelestialBodies.ToListAsync());
     }
     
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CelestialBody>> GetById(int id)
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<CelestialBody>> GetCelestialBodyById(int id)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(id);
         if (foundCelestialBody == null)
@@ -48,11 +48,8 @@ public class CelestialBodiesController : ControllerBase
     public async Task<ActionResult<List<CelestialBody>>> UpdateCelestialBody(CelestialBody updateCelestialBodyRequest)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(updateCelestialBodyRequest.Id);
-        if (foundCelestialBody == null)
-        {
-            return BadRequest("ID not found");
-        }
-
+        if (foundCelestialBody == null) return BadRequest("ID not found");
+     
         foundCelestialBody.Name = updateCelestialBodyRequest.Name;
         foundCelestialBody.Long = updateCelestialBodyRequest.Long;
         foundCelestialBody.Lat = updateCelestialBodyRequest.Lat;
@@ -63,14 +60,12 @@ public class CelestialBodiesController : ControllerBase
         return Ok(await _context.CelestialBodies.ToListAsync());
     }
 
-    [HttpDelete("{id}"), Authorize(Roles = "ROLE_ADMIN")]
+    [HttpDelete("{id:int}"), Authorize(Roles = "ROLE_ADMIN")]
     public async Task<ActionResult<List<CelestialBody>>> DeleteCelestialBody(int id)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(id);
-        if (foundCelestialBody == null)
-        {
-            return BadRequest("ID not found");
-        }
+        if (foundCelestialBody == null) return BadRequest("ID not found");
+       
 
         _context.CelestialBodies.Remove(foundCelestialBody);
         await _context.SaveChangesAsync();

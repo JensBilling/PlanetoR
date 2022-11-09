@@ -9,12 +9,10 @@ namespace PlanetoR.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly AppDbContext _context;
 
-    public AuthController(IConfiguration configuration, AppDbContext context)
+    public AuthController(AppDbContext context)
     {
-        _configuration = configuration;
         _context = context;
     }
 
@@ -22,13 +20,13 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<User>> RegisterUser(UserDto requestUserDto)
     {
         // Check if email and username is available
-        var foundUser = _context.users.FirstOrDefault(u => u.Username == requestUserDto.Username);
+        var foundUser = _context.Users.FirstOrDefault(u => u.Username == requestUserDto.Username);
         if (foundUser != null)
         {
             return BadRequest("Username is already taken");
         }
 
-        foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+        foundUser = _context.Users.FirstOrDefault(u => u.Email == requestUserDto.Email);
         if (foundUser != null)
         {
             return BadRequest("Email is already taken");
@@ -46,7 +44,7 @@ public class AuthController : ControllerBase
         user.Email = requestUserDto.Email;
         user.ApiKey = apiKeyGuid;
 
-        _context.users.Add(user);
+        _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
         return Ok("User created");
@@ -55,11 +53,11 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<string>> LoginUser(UserDto requestUserDto)
     {
-        var foundUser = _context.users.FirstOrDefault(u => u.Username == requestUserDto.Username);
+        var foundUser = _context.Users.FirstOrDefault(u => u.Username == requestUserDto.Username);
 
         if (foundUser == null)
         {
-            foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+            foundUser = _context.Users.FirstOrDefault(u => u.Email == requestUserDto.Email);
             if (foundUser == null)
             {
                 return BadRequest("User not found!");
@@ -71,15 +69,9 @@ public class AuthController : ControllerBase
             return BadRequest("Wrong password!");
         }
 
-        string jwt = "";
-        if (foundUser.isAdmin)
-        {
-            jwt = AuthHelper.CreateAdminToken(foundUser);
-        }
-        else
-        {
-            jwt = AuthHelper.CreateUserToken(foundUser);
-        }
+        var jwt = "";
+
+        jwt = foundUser.isAdmin ? AuthHelper.CreateAdminToken(foundUser) : AuthHelper.CreateUserToken(foundUser);
 
         return jwt;
     }
@@ -87,29 +79,29 @@ public class AuthController : ControllerBase
     [HttpPut("update-password")]
     public async Task<ActionResult<String>> UpdatePassword(UserDto requestUserDto)
     {
-        var foundUser = _context.users.FirstOrDefault(u => u.Username == requestUserDto.Username);
+        var foundUser = _context.Users.FirstOrDefault(u => u.Username == requestUserDto.Username);
 
         if (foundUser == null)
         {
-            foundUser = _context.users.FirstOrDefault(u => u.Email == requestUserDto.Email);
+            foundUser = _context.Users.FirstOrDefault(u => u.Email == requestUserDto.Email);
             if (foundUser == null)
             {
                 return BadRequest("User not found!");
             }
         }
-        
+
         if (!AuthHelper.VerifyPasswordHash(requestUserDto.Password, foundUser.PasswordHash, foundUser.PasswordSalt))
         {
             return BadRequest("Wrong password!");
         }
-        
+
         AuthHelper.CreatePasswordHash(requestUserDto.NewPassword, out var passwordHash, out var passwordSalt);
 
         foundUser.PasswordHash = passwordHash;
         foundUser.PasswordSalt = passwordSalt;
 
         await _context.SaveChangesAsync();
-        
+
         return Ok("Password for " + requestUserDto.Username + " updated");
     }
 }
