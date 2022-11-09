@@ -67,6 +67,6 @@ public class SatellitesController : ControllerBase
 
         _context.Satellites.Remove(foundSatellite);
         await _context.SaveChangesAsync();
-        return Ok(await _context.CelestialBodies.ToListAsync());
+        return Ok(await _context.Satellites.ToListAsync());
     }
 }
