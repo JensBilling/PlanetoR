@@ -69,4 +69,6 @@ public class SatellitesController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(await _context.Satellites.ToListAsync());
     }
+    
+  
 }

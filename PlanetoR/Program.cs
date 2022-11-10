@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PlanetoR.Data;
 using PlanetoR.Utility;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = false
     };
 });
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+    var jobKey = new JobKey("SatelliteAutoUpdate");
+    q.AddJob<SatelliteAutoUpdate>(options => options.WithIdentity(jobKey));
+
+    q.AddTrigger(options =>
+        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("* 1 * * * ?"));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 
