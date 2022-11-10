@@ -19,10 +19,7 @@ public class Satellite
 
     public void UpdateCountry(SatelliteCountryDto countryDto)
     {
-        Console.WriteLine(countryDto.countryName + "dfdg" + countryDto.value);
-        if (countryDto.value == 15) country = "Satellite over international water";
-        
-
+        if (countryDto.countryName.Equals(string.Empty)) country = "International water";
         else country = countryDto.countryName;
     }
 }

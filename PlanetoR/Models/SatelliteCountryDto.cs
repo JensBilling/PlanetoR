@@ -2,6 +2,5 @@
 
 public class SatelliteCountryDto
 {
-    public string? countryName { get; set; }
-    public int value { get; set; }
+    public string? countryName { get; set; } = string.Empty;
 }
