@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PlanetoR.Data;
 using PlanetoR.Models;
 
@@ -12,10 +14,12 @@ namespace PlanetoR.Controllers;
 public class SatellitesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public SatellitesController(AppDbContext context)
+    public SatellitesController(AppDbContext context, IHttpClientFactory httpClientFactory)
     {
         _context = context;
+        _httpClientFactory = httpClientFactory;
     }
 
     [HttpGet]
@@ -69,6 +73,19 @@ public class SatellitesController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(await _context.Satellites.ToListAsync());
     }
+
+    [HttpGet]
+    [Route("getposition")]
+    public async Task<ActionResult> GetSatellitePosition()
+    {
+        var client = _httpClientFactory.CreateClient();
+        var result = await client.GetStringAsync("https://api.wheretheiss.at/v1/satellites/25544");
+       
+        //get long/lat  and update db
+        
+
+        return Ok(result);
+    }
     
-  
+
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using PlanetoR.Models;
 
 namespace PlanetoR.Utility;
 
@@ -12,4 +13,5 @@ static class ConfigurationManager
             .AddJsonFile("appsettings.json")
             .Build();
     }
+    
 }
