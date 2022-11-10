@@ -18,7 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
-builder.Services.AddHttpClient<SatellitesController>();
+builder.Services.AddHttpClient();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,7 +45,7 @@ builder.Services.AddQuartz(q =>
     q.AddJob<SatelliteAutoUpdate>(options => options.WithIdentity(jobKey));
 
     q.AddTrigger(options =>
-        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("* 1 * * * ?"));
+        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("0/8 * * * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

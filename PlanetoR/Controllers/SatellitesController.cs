@@ -14,12 +14,11 @@ namespace PlanetoR.Controllers;
 public class SatellitesController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly IHttpClientFactory _httpClientFactory;
 
-    public SatellitesController(AppDbContext context, IHttpClientFactory httpClientFactory)
+
+    public SatellitesController(AppDbContext context)
     {
         _context = context;
-        _httpClientFactory = httpClientFactory;
     }
 
     [HttpGet]
@@ -49,14 +48,14 @@ public class SatellitesController : ControllerBase
     [HttpPut, Authorize(Roles = "ROLE_ADMIN")]
     public async Task<ActionResult<Satellite>> UpdateSatellite(Satellite updateSatelliteRequest)
     {
-        var foundSatellite = await _context.Satellites.FindAsync(updateSatelliteRequest.Id);
+        var foundSatellite = await _context.Satellites.FindAsync(updateSatelliteRequest.id);
         if (foundSatellite == null) return BadRequest("ID not found");
 
-        foundSatellite.Name = updateSatelliteRequest.Name;
-        foundSatellite.Country = updateSatelliteRequest.Country;
-        foundSatellite.Description = updateSatelliteRequest.Description;
-        foundSatellite.Latitude = updateSatelliteRequest.Latitude;
-        foundSatellite.Longitude = updateSatelliteRequest.Longitude;
+        foundSatellite.name = updateSatelliteRequest.name;
+        foundSatellite.country = updateSatelliteRequest.country;
+        foundSatellite.description = updateSatelliteRequest.description;
+        foundSatellite.latitude = updateSatelliteRequest.latitude;
+        foundSatellite.longitude = updateSatelliteRequest.longitude;
 
         await _context.SaveChangesAsync();
 
@@ -73,19 +72,4 @@ public class SatellitesController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(await _context.Satellites.ToListAsync());
     }
-
-    [HttpGet]
-    [Route("getposition")]
-    public async Task<ActionResult> GetSatellitePosition()
-    {
-        var client = _httpClientFactory.CreateClient();
-        var result = await client.GetStringAsync("https://api.wheretheiss.at/v1/satellites/25544");
-       
-        //get long/lat  and update db
-        
-
-        return Ok(result);
-    }
-    
-
 }

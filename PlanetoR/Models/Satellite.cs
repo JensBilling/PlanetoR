@@ -5,16 +5,15 @@ namespace PlanetoR.Models;
 
 public class Satellite
 {
-    [JsonProperty("id")] public long Id { get; set; }
+    public int id { get; set; }
 
-    [JsonProperty("name")] 
-    public string Name { get; set; } = string.Empty;
-    [JsonProperty("description")] 
-    public string Description { get; set; }
-    [JsonProperty("country")] 
-    public string Country { get; set; } = string.Empty;
-    [JsonProperty("latitude")] 
-    public string Latitude { get; set; } = string.Empty;
-    [JsonProperty("longitude")] 
-    public string Longitude { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
+
+    public string description { get; set; } = string.Empty;
+
+    public string country { get; set; } = string.Empty;
+
+     public double latitude { get; set; }
+
+    public double longitude { get; set; } 
 }
