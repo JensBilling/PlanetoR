@@ -21,25 +21,25 @@ public class SatelliteAutoUpdate : IJob
     public Task Execute(IJobExecutionContext context)
     {
         var httpClient = _httpClientFactory.CreateClient();
-        var responseJson = httpClient.GetStringAsync("https://api.wheretheiss.at/v1/satellites/25544");
-
-        var sateliteFromJson = JsonSerializer.Deserialize<Satellite>(responseJson.Result);
+        var satelliteJsonFromApi = httpClient.GetStringAsync("https://api.wheretheiss.at/v1/satellites/25544");
         
-        sateliteFromJson.description = "The International Space Station (ISS) is the largest modular space station currently in low Earth orbit. It is a multinational collaborative project involving five participating space agencies: NASA (United States), Roscosmos (Russia), JAXA (Japan), ESA (Europe), and CSA (Canada).";
-        sateliteFromJson.country = "Sweden";
-
-        var foundSatellite =  _context.Satellites.Find(sateliteFromJson.id);
+        var satelliteObjectFromApi = JsonSerializer.Deserialize<Satellite>(satelliteJsonFromApi.Result);
+        var foundSatellite =  _context.Satellites.Find(satelliteObjectFromApi.id);
 
         if (foundSatellite == null)
         {
-            _context.Satellites.Add(sateliteFromJson);
+            _context.Satellites.Add(satelliteObjectFromApi);
             _context.SaveChanges();
             return Task.FromResult(true);
         }
+        var countryNameFromCoordsFromApi = httpClient.GetStringAsync($"http://api.geonames.org/countryCodeJSON?lat={foundSatellite.latitude}&lng={foundSatellite.longitude}&username=jens.b");
+        var positionFromJson = JsonSerializer.Deserialize<SatelliteCountryDto>(countryNameFromCoordsFromApi.Result);
+        foundSatellite.UpdateCountry(positionFromJson);
         
-        foundSatellite.country = sateliteFromJson.country;
-        foundSatellite.latitude = sateliteFromJson.latitude;
-        foundSatellite.longitude = sateliteFromJson.longitude;
+        
+      
+        foundSatellite.latitude = satelliteObjectFromApi.latitude;
+        foundSatellite.longitude = satelliteObjectFromApi.longitude;
         
         _context.SaveChanges();
 
