@@ -11,9 +11,18 @@ public class Satellite
 
     public string description { get; set; } = string.Empty;
 
-    public string country { get; set; } = string.Empty;
+    public string? country { get; set; } = string.Empty;
 
-     public double latitude { get; set; }
+    public double latitude { get; set; }
 
-    public double longitude { get; set; } 
+    public double longitude { get; set; }
+
+    public void UpdateCountry(SatelliteCountryDto countryDto)
+    {
+        Console.WriteLine(countryDto.countryName + "dfdg" + countryDto.value);
+        if (countryDto.value == 15) country = "Satellite over international water";
+        
+
+        else country = countryDto.countryName;
+    }
 }
