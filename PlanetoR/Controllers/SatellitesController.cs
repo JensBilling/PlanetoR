@@ -73,6 +73,7 @@ public class SatellitesController : ControllerBase
         await _context.SaveChangesAsync();
         return Ok(await _context.Satellites.ToListAsync());
     }
+
     [HttpGet]
     [Route("getposition")]
     public async Task<ActionResult> GetSatellitePosition()
@@ -86,4 +87,5 @@ public class SatellitesController : ControllerBase
         return Ok(result);
     }
     
+
 }
