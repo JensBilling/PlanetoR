@@ -45,7 +45,7 @@ builder.Services.AddQuartz(q =>
     q.AddJob<SatelliteAutoUpdate>(options => options.WithIdentity(jobKey));
 
     q.AddTrigger(options =>
-        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("5 * * * * ?"));
+        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("30 * * * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
