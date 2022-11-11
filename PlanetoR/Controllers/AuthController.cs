@@ -72,7 +72,7 @@ public class AuthController : ControllerBase
         var jwt = "";
 
         jwt = foundUser.isAdmin ? AuthHelper.CreateAdminToken(foundUser) : AuthHelper.CreateUserToken(foundUser);
-
+        
         return jwt;
     }
 

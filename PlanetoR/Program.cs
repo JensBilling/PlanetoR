@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PlanetoR.Controllers;
 using PlanetoR.Data;
@@ -41,11 +42,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionJobFactory();
-    var jobKey = new JobKey("SatelliteAutoUpdate");
-    q.AddJob<SatelliteAutoUpdate>(options => options.WithIdentity(jobKey));
+    var jobKeySatelliteAutoUpdate = new JobKey("SatelliteAutoUpdate");
+    var jobKeyAutoEmail = new JobKey("SendAutoLaunchEmail");
+    
+    q.AddJob<SatelliteAutoUpdate>(options => options.WithIdentity(jobKeySatelliteAutoUpdate));
+    q.AddJob<SendAutoLaunchEmail>(options => options.WithIdentity(jobKeyAutoEmail));
 
     q.AddTrigger(options =>
-        options.ForJob(jobKey).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("1 * * * * ?"));
+        options.ForJob(jobKeySatelliteAutoUpdate).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("1 * * * * ?"));
+    
+    q.AddTrigger(options =>
+        options.ForJob(jobKeyAutoEmail).WithIdentity("SendAutoLaunchEmail-trigger").WithCronSchedule("0/5 * * * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);

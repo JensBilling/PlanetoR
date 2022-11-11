@@ -8,12 +8,5 @@
       <jdbc-url>jdbc:mysql://containers-us-west-85.railway.app:6407/railway</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="railway@containers-us-west-85.railway.app [2]" uuid="26a57463-1da0-4fb8-b1ba-6bf27a8c774c">
-      <driver-ref>mysql.8</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://containers-us-west-85.railway.app:6407/railway</jdbc-url>
-      <working-dir>$ProjectFileDir$</working-dir>
-    </data-source>
   </component>
 </project>
