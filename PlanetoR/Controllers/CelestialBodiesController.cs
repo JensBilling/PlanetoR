@@ -30,7 +30,7 @@ public class CelestialBodiesController : ControllerBase
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(id);
         if (foundCelestialBody == null)
         {
-            return BadRequest("ID not found");
+            return BadRequest("Celestial body not found");
         }
         return Ok(foundCelestialBody);
     }
@@ -48,7 +48,7 @@ public class CelestialBodiesController : ControllerBase
     public async Task<ActionResult<List<CelestialBody>>> UpdateCelestialBody(CelestialBody updateCelestialBodyRequest)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(updateCelestialBodyRequest.Id);
-        if (foundCelestialBody == null) return BadRequest("ID not found");
+        if (foundCelestialBody == null) return BadRequest("Celestial body not found");
      
         foundCelestialBody.Name = updateCelestialBodyRequest.Name;
         foundCelestialBody.Long = updateCelestialBodyRequest.Long;
@@ -64,7 +64,7 @@ public class CelestialBodiesController : ControllerBase
     public async Task<ActionResult<List<CelestialBody>>> DeleteCelestialBody(int id)
     {
         var foundCelestialBody = await _context.CelestialBodies.FindAsync(id);
-        if (foundCelestialBody == null) return BadRequest("ID not found");
+        if (foundCelestialBody == null) return BadRequest("Celestial body not found");
        
 
         _context.CelestialBodies.Remove(foundCelestialBody);

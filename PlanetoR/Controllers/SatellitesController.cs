@@ -31,7 +31,7 @@ public class SatellitesController : ControllerBase
     public async Task<ActionResult<Satellite>> GetSatelliteById(int id)
     {
         var foundSatellite = await _context.Satellites.FindAsync(id);
-        if (foundSatellite == null) return BadRequest("ID not found");
+        if (foundSatellite == null) return BadRequest("Satellite not found");
 
         return Ok(foundSatellite);
     }
@@ -49,7 +49,7 @@ public class SatellitesController : ControllerBase
     public async Task<ActionResult<Satellite>> UpdateSatellite(Satellite updateSatelliteRequest)
     {
         var foundSatellite = await _context.Satellites.FindAsync(updateSatelliteRequest.id);
-        if (foundSatellite == null) return BadRequest("ID not found");
+        if (foundSatellite == null) return BadRequest("Satellite not found");
 
         foundSatellite.name = updateSatelliteRequest.name;
         foundSatellite.country = updateSatelliteRequest.country;
@@ -66,10 +66,10 @@ public class SatellitesController : ControllerBase
     public async Task<ActionResult<Satellite>> DeleteSatellite(int id)
     {
         var foundSatellite = await _context.Satellites.FindAsync(id);
-        if (foundSatellite == null) return BadRequest("ID not found");
+        if (foundSatellite == null) return BadRequest("Satellite not found");
 
         _context.Satellites.Remove(foundSatellite);
         await _context.SaveChangesAsync();
-        return Ok(await _context.Satellites.ToListAsync());
+        return Ok(foundSatellite.name + " Deleted.");
     }
 }
