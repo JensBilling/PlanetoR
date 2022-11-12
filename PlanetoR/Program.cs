@@ -52,7 +52,7 @@ builder.Services.AddQuartz(q =>
         options.ForJob(jobKeySatelliteAutoUpdate).WithIdentity("SatelliteAutoUpdate-trigger").WithCronSchedule("1 * * * * ?"));
     
     q.AddTrigger(options =>
-        options.ForJob(jobKeyAutoEmail).WithIdentity("SendAutoLaunchEmail-trigger").WithCronSchedule("* * 1 * * ?"));
+        options.ForJob(jobKeyAutoEmail).WithIdentity("SendAutoLaunchEmail-trigger").WithCronSchedule("0 0 0 * * ?"));
 });
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
