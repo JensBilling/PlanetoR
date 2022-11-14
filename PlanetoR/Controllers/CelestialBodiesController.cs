@@ -51,9 +51,15 @@ public class CelestialBodiesController : ControllerBase
         if (foundCelestialBody == null) return BadRequest("Celestial body not found");
      
         foundCelestialBody.Name = updateCelestialBodyRequest.Name;
-        foundCelestialBody.Long = updateCelestialBodyRequest.Long;
-        foundCelestialBody.Lat = updateCelestialBodyRequest.Lat;
-        foundCelestialBody.AverageTempCelsius = updateCelestialBodyRequest.AverageTempCelsius;
+        foundCelestialBody.Mass = updateCelestialBodyRequest.Mass;
+        foundCelestialBody.Density = updateCelestialBodyRequest.Density;
+        foundCelestialBody.Diameter = updateCelestialBodyRequest.Diameter;
+        foundCelestialBody.Gravity = updateCelestialBodyRequest.Gravity;
+        foundCelestialBody.DayInEarthHours = updateCelestialBodyRequest.DayInEarthHours;
+        foundCelestialBody.YearInEarthDays = updateCelestialBodyRequest.YearInEarthDays;
+        foundCelestialBody.AverageTemperature = updateCelestialBodyRequest.AverageTemperature;
+        foundCelestialBody.NumberOfMoons = updateCelestialBodyRequest.NumberOfMoons;
+        
 
         await _context.SaveChangesAsync();
         
