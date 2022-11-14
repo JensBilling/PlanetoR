@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 using System.Text.Json;
+using PlanetoR.Data;
 using PlanetoR.Models;
 using Quartz;
 
@@ -9,10 +10,12 @@ namespace PlanetoR.Utility;
 public class SendAutoLaunchEmail : IJob
 {
     private readonly IHttpClientFactory? _httpClientFactory;
+    private readonly AppDbContext _dbContext;
 
-    public SendAutoLaunchEmail(IHttpClientFactory? httpClientFactory)
+    public SendAutoLaunchEmail(IHttpClientFactory? httpClientFactory, AppDbContext dbContext)
     {
         _httpClientFactory = httpClientFactory;
+        _dbContext = dbContext;
     }
 
     public Task Execute(IJobExecutionContext context)
@@ -24,12 +27,14 @@ public class SendAutoLaunchEmail : IJob
         var launchDescription = ExtractDataFromJson.extractString(launchJsonFromApi, "launch_description");
         var winOpen = ExtractDataFromJson.extractString(launchJsonFromApi, "win_open");
         var launchDate = DateTime.Parse(winOpen);
-        
-        if (launchDate.Day.Equals(DateTime.Now.Day))
+
+
+        if (!launchDate.Day.Equals(DateTime.Now.Day)) return Task.FromResult(true);
+        var foundUsers = _dbContext.Users.ToList();
+
+        foreach (var user in foundUsers)
         {
-            Console.WriteLine(MailSender("jonasgranbom@hotmail.com", launchDescription, "A rocket will launch today!"));
-            Console.WriteLine(MailSender("jensis92@hotmail.com", launchDescription, "A rocket will launch today!"));
-            Console.WriteLine(MailSender("gunnarssonminna@gmail.com", launchDescription, "A rocket will launch today! VISA LITE ENGAGEMANG FÖR HELVETE, BABY!!!"));
+            Console.WriteLine(MailSender(user.Email, launchDescription, "Get ready for the upcoming rocket launch! :)"));
         }
 
         return Task.FromResult(true);
@@ -37,13 +42,13 @@ public class SendAutoLaunchEmail : IJob
 
     private string MailSender(string receiver, string messageContent, string subject)
     {
-        MailAddress to = new MailAddress(receiver);
-        MailAddress from = new MailAddress("planetor@jensbilling.se");
-        MailMessage message = new MailMessage(from, to);
+        var to = new MailAddress(receiver);
+        var from = new MailAddress("planetor@jensbilling.se");
+        var message = new MailMessage(from, to);
         message.Subject = subject;
         message.Body = messageContent;
 
-        SmtpClient client = new SmtpClient("smtp.simply.com", 587)
+        var client = new SmtpClient("smtp.simply.com", 587)
         {
             Credentials = new NetworkCredential("planetor@jensbilling.se", "planetor666"),
             EnableSsl = true
@@ -59,8 +64,5 @@ public class SendAutoLaunchEmail : IJob
             Console.WriteLine(e.ToString());
             return "email not sent";
         }
-
-
-        
     }
 }
