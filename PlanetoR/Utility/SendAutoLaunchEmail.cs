@@ -1,8 +1,5 @@
-﻿using System.Net;
-using System.Net.Mail;
-using System.Text.Json;
-using PlanetoR.Data;
-using PlanetoR.Models;
+﻿using PlanetoR.Data;
+
 using Quartz;
 
 namespace PlanetoR.Utility;
@@ -34,35 +31,10 @@ public class SendAutoLaunchEmail : IJob
 
         foreach (var user in foundUsers)
         {
-            Console.WriteLine(MailSender(user.Email, launchDescription, "Get ready for the upcoming rocket launch! :)"));
+            Console.WriteLine(MailHelper.MailSender(user.Email, launchDescription, "Get ready for the upcoming rocket launch! :)"));
         }
 
         return Task.FromResult(true);
     }
-
-    private string MailSender(string receiver, string messageContent, string subject)
-    {
-        var to = new MailAddress(receiver);
-        var from = new MailAddress("planetor@jensbilling.se");
-        var message = new MailMessage(from, to);
-        message.Subject = subject;
-        message.Body = messageContent;
-
-        var client = new SmtpClient("smtp.simply.com", 587)
-        {
-            Credentials = new NetworkCredential("planetor@jensbilling.se", "planetor666"),
-            EnableSsl = true
-        };
-
-        try
-        {
-            client.Send(message);
-            return "email sent to " + receiver;
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-            return "email not sent";
-        }
-    }
+    
 }

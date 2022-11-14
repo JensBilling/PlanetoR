@@ -47,6 +47,9 @@ public class AuthController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
+        MailHelper.MailSender(requestUserDto.Email, "Welcome to PlanetoR, " + requestUserDto.Username + "! Your account has been created.",
+            "Welcome to PlanetoR!");
+
         return Ok("User created");
     }
 
