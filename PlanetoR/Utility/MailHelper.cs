@@ -5,7 +5,7 @@ namespace PlanetoR.Utility;
 
 public static class MailHelper
 {
-    public static string MailSender(string receiver, string messageContent, string subject)
+    public static void MailSender(string receiver, string messageContent, string subject)
     {
         var to = new MailAddress(receiver);
         var from = new MailAddress("planetor@jensbilling.se");
@@ -22,12 +22,12 @@ public static class MailHelper
         try
         {
             client.Send(message);
-            return "email sent to " + receiver;
+            Console.WriteLine("email sent to " + receiver);
         }
         catch (Exception e)
         {
             Console.WriteLine(e.ToString());
-            return "email not sent";
+            Console.WriteLine("email not sent");
         }
     }
 }

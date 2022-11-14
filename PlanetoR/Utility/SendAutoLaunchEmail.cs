@@ -31,7 +31,7 @@ public class SendAutoLaunchEmail : IJob
 
         foreach (var user in foundUsers)
         {
-            Console.WriteLine(MailHelper.MailSender(user.Email, launchDescription, "Get ready for the upcoming rocket launch! :)"));
+            MailHelper.MailSender(user.Email, launchDescription, "Get ready for the upcoming rocket launch! :)");
         }
 
         return Task.FromResult(true);
