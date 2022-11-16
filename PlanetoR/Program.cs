@@ -59,12 +59,13 @@ builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
-        policy =>
-        {
-            policy.WithOrigins("*");
-        });
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+            builder.AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 });
+
 
 var app = builder.Build();
 
@@ -78,7 +79,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors();
+app.UseCors("AllowAllOrigins");
 
 app.UseAuthentication();
 
