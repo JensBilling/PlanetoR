@@ -7,7 +7,12 @@ public static class MailHelper
 {
     public static void MailSender(string receiver, string messageContent, string subject)
     {
-        var to = new MailAddress(receiver);
+
+        Console.WriteLine("We were supposed to send an email to: " + receiver + " with subject: '" + subject + "'. But PlanetoR's email address has been temporarily blocked for spam.");
+        
+        // Commented code below is a quick disable of mail-sender because email address has been tagged for spam
+        
+        /*var to = new MailAddress(receiver);
         var from = new MailAddress("planetor@jensbilling.se");
         var message = new MailMessage(from, to);
         message.Subject = subject;
@@ -28,6 +33,6 @@ public static class MailHelper
         {
             Console.WriteLine(e.ToString());
             Console.WriteLine("email not sent");
-        }
+        }*/
     }
 }
